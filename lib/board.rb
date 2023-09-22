@@ -17,11 +17,7 @@ class Board
   def display_board
     @board1.each do |row|
       row_display = row.map do |cell|
-        if cell.is_a?(White::WhitePawn) || cell.is_a?(White::WhiteRook) || cell.is_a?(White::WhiteBishop)
-          cell.to_s
-        else
-          cell
-        end
+        cell
       end
       puts row_display.join(' | ')
       puts '-' * (row_display.length * 4 - 1) # Separator line between rows
