@@ -1,3 +1,17 @@
+def check_king(board,possible_moves_arr)
+    # puts "These are the possible moves : #{possible_moves_arr}"
+    possible_moves_arr.each do |move|
+        # puts "This is move: #{move}"
+        if board[move[0]][move[1]] != " " 
+            if board[move[0]][move[1]].is_a?(Piece) && board[move[0]][move[1]].is_a?(King)
+                puts "Its a check!!"
+            end
+        end
+    end
+end
+
+
+
 class Piece
     attr_accessor :encoded_symbol, :color
 
@@ -5,7 +19,7 @@ class Piece
       @encoded_symbol = encoded_symbol.encode('utf-8')
       @color = color
     end
-  
+
     def to_s
       @encoded_symbol
     end
@@ -22,7 +36,6 @@ class Pawn < Piece
         encoded_symbol = color == :white ? "\u2659" : "\u265F"
         super(encoded_symbol, color)
     end
-
     
     def move_pawn(board, pos)
         possible_moves = []
@@ -39,12 +52,12 @@ class Pawn < Piece
             end
     
             # Checking diagonally - right side
-            if pos[1] < 7 && board[pos[0] - 1][pos[1] + 1] != ' ' && board[pos[0] - 1][pos[1] + 1].color != :white
+            if pos[1] <= 7 && board[pos[0] - 1][pos[1] + 1].is_a?(Piece) && board[pos[0] - 1][pos[1] + 1].color != :white
                 possible_moves.push([pos[0] - 1, pos[1] + 1])
             end
     
             # Checking diagonally - left side
-            if pos[1] >= 2 && board[pos[0] - 1][pos[1] - 1] != ' ' && board[pos[0] - 1][pos[1]].class != Integer && board[pos[0] - 1][pos[1] - 1].color != :white
+            if pos[1] >= 2 && board[pos[0] - 1][pos[1] - 1].is_a?(Piece) && board[pos[0] - 1][pos[1]].class != Integer && board[pos[0] - 1][pos[1] - 1].color != :white
                 possible_moves.push([pos[0] - 1, pos[1] - 1])
             end
     
@@ -52,10 +65,12 @@ class Pawn < Piece
             if board[pos[0] - 1][pos[1]] == " "
                 possible_moves.push([pos[0] - 1, pos[1]])
             end
+
+            return possible_moves.uniq
         else
             #Promoting pawns if they make it to the backside of the black pieces
 
-            
+
             # Checking if the initial double step is possible or not
             if pos[0] == 1
                 if board[pos[0] + 1][pos[1]] == " " && board[pos[0] + 2][pos[1]] == " "
@@ -65,7 +80,7 @@ class Pawn < Piece
             end
     
             # Checking diagonally - right side
-            if pos[1] < 7 && board[pos[0] + 1][pos[1] + 1] != ' ' && board[pos[0] + 1][pos[1] + 1].color != :black
+            if pos[1] <= 7 && board[pos[0] + 1][pos[1] + 1] != ' ' && board[pos[0] + 1][pos[1] + 1].color != :black
                 possible_moves.push([pos[0] + 1, pos[1] + 1])
             end
     
@@ -78,8 +93,8 @@ class Pawn < Piece
             if board[pos[0] + 1][pos[1]] == " "
                 possible_moves.push([pos[0] + 1, pos[1]])
             end
+            return possible_moves.uniq
         end
-        return possible_moves.uniq
     end
 end
   
@@ -249,9 +264,8 @@ class Bishop < Piece
 
         if color == :white
             initial_val = 1
-
             #Up&Right
-            while 0 < pos[0] - initial_val && pos[1] + initial_val < 8  
+            while pos[0] - initial_val >= 0 && pos[1] + initial_val < 8  
                 target_piece = board[pos[0] - initial_val][pos[1] + initial_val]
 
 
@@ -324,7 +338,7 @@ class Bishop < Piece
         else            
             initial_val = 1
             #Up&Right
-            while 0 < pos[0] - initial_val && pos[1] + initial_val < 8  
+            while 0 <= pos[0] - initial_val && pos[1] + initial_val < 8  
                 target_piece = board[pos[0] - initial_val][pos[1] + initial_val]
 
 
@@ -399,34 +413,40 @@ end
 
 
 class Knight < Piece
-    def initialize(color)
+    def initialize( color)
         encoded_symbol = color == :white ? "\u2658" : "\u265E"
         super(encoded_symbol, color)
     end
 
     def move_knight(board,pos)
+        puts "Pos is #{pos}"
         possible_moves = []
-            neighbors = [
-                [pos[0] + 2, pos[1] + 1], [pos[0] - 2, pos[1] + 1],
-                [pos[0] + 2, pos[1] - 1], [pos[0] - 2, pos[1] - 1],
-                [pos[0] + 1, pos[1] + 2], [pos[0] - 1, pos[1] + 2],
-                [pos[0] + 1, pos[1] - 2], [pos[0] - 1, pos[1] - 2]
-            ]
-
+        neighbors = [
+            [pos[0] + 2, pos[1] + 1], [pos[0] - 2, pos[1] + 1],
+            [pos[0] + 2, pos[1] - 1], [pos[0] - 2, pos[1] - 1],
+            [pos[0] + 1, pos[1] + 2], [pos[0] - 1, pos[1] + 2],
+            [pos[0] + 1, pos[1] - 2], [pos[0] - 1, pos[1] - 2]
+        ]
+        
+        # puts "These are the neighbors #{neighbors}"
+        # p neighbors
         if color == :white
-            # possible_moves = neighbors.select { |n| n[0] >=0 && n[1] >= 1 && n[0] < 8 && n[1] <= 8 && board[n[0]][n[1]].color != :white }
-            possible_moves = neighbors.select do |n|
-                n[0] >= 0 && n[1] >= 1 && n[0] < 8 && n[1] <= 8 &&
-                  board[n[0]][n[1]] == " " || ((board[n[0]][n[1]].is_a?(Piece) && board[n[0]][n[1]].color != :white))
-              end
+            neighbors.each do |n|
+                if n[0] >= 0 && n[0] <= 7 && n[1] >= 1 
+                    if board[n[0]][n[1]] == " " || (board[n[0]][n[1]] != " " && board[n[0]][n[1]].is_a?(Piece) && board[n[0]][n[1]].color == :black)
+                        possible_moves.push(n)
+                    end
+                end
+            end
         else
-            # possible_moves = neighbors.select { |n| n[0] >=0 && n[1] >= 1 && n[0] < 8 && n[1] <= 8 && board[n[0]][n[1]].color != :black }
-            possible_moves = neighbors.select do |n|
-                n[0] >= 0 && n[1] >= 1 && n[0] < 8 && n[1] <= 8 &&
-                  board[n[0]][n[1]] == " " || ((board[n[0]][n[1]].is_a?(Piece) && board[n[0]][n[1]].color != :black))
-              end
+            neighbors.each do |n|
+                if n[0] >= 0 && n[0] <= 7 && n[1] >= 1 
+                    if board[n[0]][n[1]] == " " || (board[n[0]][n[1]] != " " && board[n[0]][n[1]].is_a?(Piece) && board[n[0]][n[1]].color == :white)
+                        possible_moves.push(n)
+                    end
+                end
+            end
         end
-
         return possible_moves
     end
 end
