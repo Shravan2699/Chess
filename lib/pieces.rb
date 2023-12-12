@@ -1,15 +1,20 @@
-def check_king(board,possible_moves_arr)
+def check_king(board,possible_moves_arr,player)
     # puts "These are the possible moves : #{possible_moves_arr}"
     possible_moves_arr.each do |move|
         # puts "This is move: #{move}"
         if board[move[0]][move[1]] != " " 
             if board[move[0]][move[1]].is_a?(Piece) && board[move[0]][move[1]].is_a?(King)
                 puts "Its a check!!"
+                puts "#{player} has checked you!!"
             end
         end
     end
 end
 
+# def check_mate(board_arr)
+#     flat_arr = board_arr.flatten
+    
+#     fla
 
 
 class Piece
@@ -419,7 +424,7 @@ class Knight < Piece
     end
 
     def move_knight(board,pos)
-        puts "Pos is #{pos}"
+        # puts "Pos is #{pos}"
         possible_moves = []
         neighbors = [
             [pos[0] + 2, pos[1] + 1], [pos[0] - 2, pos[1] + 1],

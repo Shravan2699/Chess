@@ -38,9 +38,93 @@ class Board
     column_pos = @COLUMNS[split_char[0].upcase]
     return [row_pos,column_pos]
   end
+
+#Need to find the position of the king wrt the chessboard not an array.
+#Need to check all moves of all the pieces and see if it includes the opposition king,if it does == check
+
+  def find_kings(board_arr)
+    king_coordinates = []
+
+    board_arr.each_with_index do |row, row_index|
+      row.each_with_index do |piece, col_index|
+        if piece.is_a?(King)
+          king_coordinates << [row_index, col_index]  # Store coordinates of the King
+        end
+      end
+    end
+    converted_king_coordinates = []
+    if king_coordinates.empty?
+      return nil
+    else
+      king_coordinates.each do |king|
+        converted_king_coordinates.push(self.convert_to_alphanumeric(king))
+      end
+      return king_coordinates
+    end
+  end
+
+
+  #This function will get the job done,we just need to implement this correctly
+  def in_check?(board)
+    all_kings = self.find_kings(board)
+    opposition_king_coordinate = 0
+    white_king_pos = 0
+    black_king_pos = 0
+    all_kings.each do |king|
+      if board[king[0]][king[1]].color == :black
+        black_king_pos = king
+      elsif board[king[0]][king[1]].color == :white
+        white_king_pos = king
+      end
+    end
+
+    # p "Black King Position : #{black_king_pos}"
+    # p "White King Position : #{white_king_pos}"
+
+    white_player_moves = []
+    black_player_moves = []
+    board.each_with_index do |row, row_index|
+      row.each_with_index do |piece, col_index|
+        if piece.is_a?(Integer) || piece.nil? || piece == " "
+          next
+        elsif piece.respond_to?(:color) && piece.color == :white
+          case piece
+          when Pawn
+            white_player_moves.concat(piece.move_pawn(self.board1, [row_index, col_index]))
+          when Rook
+            white_player_moves.concat(piece.move_rook(self.board1, [row_index, col_index]))
+          when Knight
+            white_player_moves.concat(piece.move_knight(self.board1, [row_index, col_index]))
+          when Queen
+            white_player_moves.concat(piece.move_queen(self.board1, [row_index, col_index]))
+          when Bishop
+            white_player_moves.concat(piece.move_bishop(self.board1, [row_index, col_index]))
+          end
+        elsif piece.respond_to?(:color) && piece.color == :black
+          case piece
+          when Pawn
+            black_player_moves.concat(piece.move_pawn(self.board1, [row_index, col_index]))
+          when Rook
+            black_player_moves.concat(piece.move_rook(self.board1, [row_index, col_index]))
+          when Knight
+            black_player_moves.concat(piece.move_knight(self.board1, [row_index, col_index]))
+          when Queen
+            black_player_moves.concat(piece.move_queen(self.board1, [row_index, col_index]))
+          when Bishop
+            black_player_moves.concat(piece.move_bishop(self.board1, [row_index, col_index]))
+          end
+        end
+      end
+    end
+
+
+    if  white_player_moves.include?(black_king_pos)
+      return "Its a check!!\nBlack is in check"
+    elsif black_player_moves.include?(white_king_pos)
+      return "Its a check!!\nWhite is in check"
+    else 
+      return "No check!!"
+    end
+  end
 end
-
-
-# my_board = Board.new
-# my_board.display_board
 
