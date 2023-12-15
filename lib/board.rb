@@ -119,11 +119,40 @@ class Board
 
 
     if  white_player_moves.include?(black_king_pos)
-      return "Its a check!!\nBlack is in check"
+      puts "Its a check!!\nBlack is in check"
+      return 0
     elsif black_player_moves.include?(white_king_pos)
-      return "Its a check!!\nWhite is in check"
+      puts "Its a check!!\nWhite is in check"
+      return 1
     else 
-      return "No check!!"
+      # puts "No check!!"
+      return 2
+    end
+  end
+
+
+  def checkmate?(board)
+    all_kings = self.find_kings(board)
+    white_king_pos = 0
+    black_king_pos = 0
+    all_kings.each do |king|
+      if board[king[0]][king[1]].color == :black
+        black_king_pos = king
+      elsif board[king[0]][king[1]].color == :white
+        white_king_pos = king
+      end
+    end
+
+    
+    black_king = board[black_king_pos[0]][black_king_pos[1]]
+    white_king = board[white_king_pos[0]][white_king_pos[1]]
+    #To check if white King is checkmate or not
+    if self.in_check?(board) == 1
+      if white_king.move_king(self.board1,white_king_pos).empty?
+        puts "It's a checkmate!!\nBlack has won the game"
+      elsif black_king.move_king(self.board1,black_king_pos).empty?
+        puts "It's a checkmate!!\nWhite has won the game"
+      end
     end
   end
 end

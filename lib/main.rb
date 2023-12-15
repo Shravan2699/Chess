@@ -153,7 +153,9 @@ while true
   player1.move(chess_board)
   chess_board.display_board
 #   p chess_board.find_kings(chess_board.board1)
-  puts chess_board.in_check?(chess_board.board1)
+  chess_board.in_check?(chess_board.board1)
+  # puts chess_board.checkmate?(chess_board.board1)
+  chess_board.checkmate?(chess_board.board1)
 
   if player1.quit_game? || player2.quit_game?
     break  # Exit the loop if either player wants to quit
@@ -161,7 +163,8 @@ while true
 
   player2.move(chess_board)
   chess_board.display_board
-  puts chess_board.in_check?(chess_board.board1)
+  chess_board.in_check?(chess_board.board1)
+  chess_board.checkmate?(chess_board.board1)
 
   if player1.quit_game? || player2.quit_game?
     break  # Exit the loop if either player wants to quit
