@@ -131,42 +131,46 @@ end
 render_ascii_art()
 
 
-
-puts "Welcome to Terminal-Chess game!!"
-chess_board = create_board
-chess_board.display_board
-# puts "This is chess board array : #{chess_board.board1}"
-puts "Enter your name,player 1..."
-name1 = gets.chomp
-puts "#{name1} will move the white pieces"
-puts "Enter your name,player 2..."
-name2 = gets.chomp
-puts "#{name2} will move the black pieces"
-
-
-
-player1 = Player.new(name1, :white, chess_board)
-player2 = Player.new(name2, :black, chess_board)
-
-
-while true
-  player1.move(chess_board)
+def new_game()
+  puts "Welcome to Terminal-Chess game!!"
+  chess_board = create_board
   chess_board.display_board
-#   p chess_board.find_kings(chess_board.board1)
-  chess_board.in_check?(chess_board.board1)
-  # puts chess_board.checkmate?(chess_board.board1)
-  chess_board.checkmate?(chess_board.board1)
+  chess_board.load_game()
+  # puts "This is chess board array : #{chess_board.board1}"
+  puts "Enter your name,player 1..."
+  name1 = gets.chomp
+  puts "#{name1} will move the white pieces"
+  puts "Enter your name,player 2..."
+  name2 = gets.chomp
+  puts "#{name2} will move the black pieces"
 
-  if player1.quit_game? || player2.quit_game?
-    break  # Exit the loop if either player wants to quit
-  end
 
-  player2.move(chess_board)
-  chess_board.display_board
-  chess_board.in_check?(chess_board.board1)
-  chess_board.checkmate?(chess_board.board1)
 
-  if player1.quit_game? || player2.quit_game?
-    break  # Exit the loop if either player wants to quit
+  player1 = Player.new(name1, :white, chess_board)
+  player2 = Player.new(name2, :black, chess_board)
+
+
+  while true
+    player1.move(chess_board)
+    chess_board.display_board
+  #   p chess_board.find_kings(chess_board.board1)
+    chess_board.in_check?(chess_board.board1)
+    # puts chess_board.checkmate?(chess_board.board1)
+    chess_board.checkmate?(chess_board.board1)
+
+    if player1.quit_game? || player2.quit_game?
+      break  # Exit the loop if either player wants to quit
+    end
+
+    player2.move(chess_board)
+    chess_board.display_board
+    chess_board.in_check?(chess_board.board1)
+    chess_board.checkmate?(chess_board.board1)
+
+    if player1.quit_game? || player2.quit_game?
+      break  # Exit the loop if either player wants to quit
+    end
   end
 end
+
+new_game()

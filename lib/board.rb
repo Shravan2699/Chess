@@ -42,7 +42,9 @@ class Board
 #Need to find the position of the king wrt the chessboard not an array.
 #Need to check all moves of all the pieces and see if it includes the opposition king,if it does == check
 
+
   def find_kings(board_arr)
+    # p board_arr
     king_coordinates = []
 
     board_arr.each_with_index do |row, row_index|
@@ -67,9 +69,14 @@ class Board
   #This function will get the job done,we just need to implement this correctly
   def in_check?(board)
     all_kings = self.find_kings(board)
+    # return 3 if all_kings.nil?
+    p board
+
     opposition_king_coordinate = 0
     white_king_pos = 0
     black_king_pos = 0
+
+
     all_kings.each do |king|
       if board[king[0]][king[1]].color == :black
         black_king_pos = king
@@ -78,8 +85,7 @@ class Board
       end
     end
 
-    # p "Black King Position : #{black_king_pos}"
-    # p "White King Position : #{white_king_pos}"
+    
 
     white_player_moves = []
     black_player_moves = []
@@ -143,7 +149,7 @@ class Board
       end
     end
 
-    
+
     black_king = board[black_king_pos[0]][black_king_pos[1]]
     white_king = board[white_king_pos[0]][white_king_pos[1]]
     #To check if white King is checkmate or not
@@ -153,6 +159,55 @@ class Board
       elsif black_king.move_king(self.board1,black_king_pos).empty?
         puts "It's a checkmate!!\nWhite has won the game"
       end
+    end
+  end
+
+
+  def load_game(board)
+
+
+  end
+
+#   def save_game(rand_word,user_guessed_word,incorrect,rem_guesses)
+#     puts "Please enter the name of the game save"
+#     game_save_name = gets.chomp
+#     save_obj = {}
+#     save_obj[:random_word] = rand_word
+#     save_obj[:user_guess_progress] = user_guessed_word
+#     save_obj[:guesses] = rem_guesses
+#     save_obj[:incorrect_arr] = incorrect
+#     File.open("./savefiles/#{game_save_name}.yml", "w") { |file| file.write(save_obj.to_yaml) }
+#     puts "Your progess has been saved..."
+# end
+
+  def save_game?(current_board_arr)
+    puts "Please enter the name of the game save"
+    game_save_name = gets.chomp
+    save_obj = {}
+    save_obj[:current_board_arr] = current_board_arr
+    File.open("./savefiles/#{game_save_name}.yml", "w") { |file| file.write(save_obj.to_yaml) }
+    puts "Your progress has been saved..."
+  end
+
+  def load_game()
+    load_idx = 1
+    save_games_array = Dir.children("./savefiles/")
+    puts "Select the number for the save file you want to load"
+    save_games_array.each_with_index do |elem,idx|
+        puts "#{idx+1}. #{elem.chomp(".rb")}"
+    end
+    load_idx = gets.chomp.to_i - 1
+    if load_idx >= 0 && load_idx < save_games_array.length
+      obj_from_yaml_file = YAML.load(File.read("./savefiles/#{save_games_array[load_idx]}"))
+      loaded_board_array = obj_from_yaml_file[:current_board_arr]
+      p loaded_board_array
+      if load_idx <= save_games_array.length && load_idx >= 0
+        incorrect_load_ans = false
+      end
+    else
+      puts "\n\n\n\nInvalid Input"
+      puts "Let's start a new game instead!"
+      new_game()
     end
   end
 end
